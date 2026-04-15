@@ -21,8 +21,6 @@
         max-height: 600px; 
         object-fit: contain; 
     }
-    
-    /* Conteneur des données inférieures */
     .dashboard-data {
         width: 100%;
         max-width: 400px;
@@ -30,28 +28,19 @@
         font-size: 22px;
         letter-spacing: 0.5px;
     }
-    
     .data-row {
         display: grid;
         grid-template-columns: 2fr 1fr 1fr;
         align-items: center;
         margin-bottom: 20px;
     }
-    
-    .data-row.alarm {
-        margin-top: 50px;
-    }
-
+    .data-row.alarm { margin-top: 50px; }
     .label { font-weight: bold; }
     .val { text-align: right; }
-    
-    /* Couleurs spécifiques */
     .c-green { color: #90ee90; }
     .c-red { color: #ff0000; }
     .c-yellow { color: #ffff00; }
     .fw-normal { font-weight: normal; }
-
-    /* Interrupteur (Toggle Switch) */
     .toggle-container {
         display: flex;
         justify-content: flex-end;
@@ -62,11 +51,7 @@
         width: 66px;
         height: 32px;
     }
-    .switch input { 
-        opacity: 0; 
-        width: 0; 
-        height: 0; 
-    }
+    .switch input { opacity: 0; width: 0; height: 0; }
     .slider {
         position: absolute;
         cursor: pointer;
@@ -91,26 +76,14 @@
         border-radius: 50%;
         transition: .4s;
     }
-    input:checked + .slider { 
-        background-color: #4caf50; 
-    }
-    input:checked + .slider:before { 
-        transform: translateX(34px); 
-    }
-    .off-text {
-        color: #000;
-        font-size: 14px;
-        font-weight: bold;
-    }
-    input:checked + .slider .off-text { 
-        display: none; 
-    }
+    input:checked + .slider { background-color: #4caf50; }
+    input:checked + .slider:before { transform: translateX(34px); }
+    .off-text { color: #000; font-size: 14px; font-weight: bold; }
+    input:checked + .slider .off-text { display: none; }
   </style>
 </head>
 <body>
-  
   <canvas id="gauge" width="600" height="600"></canvas>
-
   <div class="dashboard-data">
       <div class="data-row">
           <span class="label c-green">Fond</span>
@@ -143,12 +116,10 @@
           </div>
       </div>
   </div>
-
   <script>
     const canvas = document.getElementById('gauge');
     const ctx = canvas.getContext('2d');
     const cx = 300, cy = 300;
-
     function draw() {
       ctx.clearRect(0, 0, 600, 600);
       ctx.beginPath(); ctx.arc(cx, cy, 295, 0, 2*Math.PI);
