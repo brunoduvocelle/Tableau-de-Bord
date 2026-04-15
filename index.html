@@ -38,25 +38,69 @@
     .label { font-weight: bold; }
     .val { text-align: right; }
     
-    /* Input pour l'alarme */
-    .alarm-input {
+    /* Bouton visuel pour l'alarme */
+    .alarm-button {
         background: transparent;
-        border: none;
+        border: 2px solid #ff0000;
+        border-radius: 8px;
         color: #ff0000;
-        font-size: 22px;
-        font-family: inherit;
+        font-size: 20px;
         font-weight: bold;
-        text-align: right;
-        width: 50px;
-        outline: none;
-        padding: 0;
+        padding: 4px 12px;
+        cursor: pointer;
+        display: inline-block;
+        transition: background 0.2s;
     }
-    /* Supprime les flèches du champ nombre */
-    .alarm-input::-webkit-outer-spin-button,
-    .alarm-input::-webkit-inner-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
+    .alarm-button:active {
+        background: rgba(255, 0, 0, 0.2);
     }
+
+    /* Fenêtre Modale (Cachée par défaut) */
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0, 0, 0, 0.85);
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
+    .modal-content {
+        background: #1a1a1a;
+        padding: 30px;
+        border-radius: 15px;
+        border: 1px solid #444;
+        text-align: center;
+        width: 280px;
+    }
+    .modal-content h3 { margin-top: 0; color: #fff; }
+    .modal-input {
+        width: 80%;
+        font-size: 24px;
+        padding: 10px;
+        margin: 20px 0;
+        text-align: center;
+        background: #333;
+        border: 1px solid #555;
+        color: #fff;
+        border-radius: 5px;
+    }
+    .modal-buttons {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+    }
+    .btn {
+        flex: 1;
+        padding: 12px;
+        font-size: 16px;
+        font-weight: bold;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    .btn-ok { background: #4caf50; color: white; }
+    .btn-cancel { background: #f44336; color: white; }
 
     .c-green { color: #90ee90; }
     .c-red { color: #ff0000; }
@@ -90,10 +134,7 @@
     .slider:before {
         position: absolute;
         content: "";
-        height: 26px;
-        width: 26px;
-        left: 3px;
-        bottom: 3px;
+        height: 26px; width: 26px; left: 3px; bottom: 3px;
         background-color: #fff;
         box-shadow: 0 2px 4px rgba(0,0,0,0.4);
         border-radius: 50%;
@@ -130,10 +171,11 @@
           <span class="val c-yellow">0 m</span>
           <span></span>
       </div>
+      
       <div class="data-row alarm">
           <span class="label c-red fw-normal">Alarme</span>
-          <span class="val c-red">
-            <input type="number" id="alarmVal" class="alarm-input" value="5" min="0" step="0.5"> m
+          <span class="val">
+              <div id="displayAlarm" class="alarm-button">5 m</div>
           </span>
           <div class="toggle-container">
               <label class="switch">
@@ -144,17 +186,50 @@
       </div>
   </div>
 
+  <div id="alarmModal" class="modal-overlay">
+      <div class="modal-content">
+          <h3>Régler l'alarme</h3>
+          <input type="number" id="newAlarmInput" class="modal-input" step="0.5">
+          <div class="modal-buttons">
+              <button class="btn btn-cancel" onclick="closeModal()">Annuler</button>
+              <button class="btn btn-ok" onclick="saveAlarm()">Valider</button>
+          </div>
+      </div>
+  </div>
+
   <script>
     const canvas = document.getElementById('gauge');
     const ctx = canvas.getContext('2d');
     const cx = 300, cy = 300;
 
-    // Gestion de l'alarme
-    const alarmInput = document.getElementById('alarmVal');
-    alarmInput.addEventListener('change', (e) => {
-        console.log("Nouveau seuil d'alarme : " + e.target.value + "m");
+    // --- Logique de la Modale ---
+    let currentAlarm = 5;
+    const modal = document.getElementById('alarmModal');
+    const displayAlarm = document.getElementById('displayAlarm');
+    const newAlarmInput = document.getElementById('newAlarmInput');
+
+    displayAlarm.addEventListener('click', () => {
+        newAlarmInput.value = currentAlarm;
+        modal.style.display = 'flex';
     });
 
+    function closeModal() {
+        modal.style.display = 'none';
+    }
+
+    function saveAlarm() {
+        currentAlarm = parseFloat(newAlarmInput.value);
+        displayAlarm.innerText = currentAlarm + " m";
+        console.log("Alarme mise à jour :", currentAlarm);
+        closeModal();
+    }
+
+    // Fermer si on clique à côté de la fenêtre
+    window.onclick = function(event) {
+        if (event.target == modal) closeModal();
+    }
+
+    // --- Dessin du Cadran ---
     function draw() {
       ctx.clearRect(0, 0, 600, 600);
       ctx.beginPath(); ctx.arc(cx, cy, 295, 0, 2*Math.PI);
