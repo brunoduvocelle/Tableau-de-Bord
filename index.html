@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
@@ -37,10 +37,33 @@
     .data-row.alarm { margin-top: 50px; }
     .label { font-weight: bold; }
     .val { text-align: right; }
+    
+    /* Input pour l'alarme */
+    .alarm-input {
+        background: transparent;
+        border: none;
+        color: #ff0000;
+        font-size: 22px;
+        font-family: inherit;
+        font-weight: bold;
+        text-align: right;
+        width: 50px;
+        outline: none;
+        padding: 0;
+    }
+    /* Supprime les flèches du champ nombre */
+    .alarm-input::-webkit-outer-spin-button,
+    .alarm-input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
     .c-green { color: #90ee90; }
     .c-red { color: #ff0000; }
     .c-yellow { color: #ffff00; }
     .fw-normal { font-weight: normal; }
+
+    /* Switch toggle */
     .toggle-container {
         display: flex;
         justify-content: flex-end;
@@ -83,7 +106,9 @@
   </style>
 </head>
 <body>
+  
   <canvas id="gauge" width="600" height="600"></canvas>
+
   <div class="dashboard-data">
       <div class="data-row">
           <span class="label c-green">Fond</span>
@@ -107,7 +132,9 @@
       </div>
       <div class="data-row alarm">
           <span class="label c-red fw-normal">Alarme</span>
-          <span class="val c-red">5 m</span>
+          <span class="val c-red">
+            <input type="number" id="alarmVal" class="alarm-input" value="5" min="0" step="0.5"> m
+          </span>
           <div class="toggle-container">
               <label class="switch">
                   <input type="checkbox">
@@ -116,10 +143,18 @@
           </div>
       </div>
   </div>
+
   <script>
     const canvas = document.getElementById('gauge');
     const ctx = canvas.getContext('2d');
     const cx = 300, cy = 300;
+
+    // Gestion de l'alarme
+    const alarmInput = document.getElementById('alarmVal');
+    alarmInput.addEventListener('change', (e) => {
+        console.log("Nouveau seuil d'alarme : " + e.target.value + "m");
+    });
+
     function draw() {
       ctx.clearRect(0, 0, 600, 600);
       ctx.beginPath(); ctx.arc(cx, cy, 295, 0, 2*Math.PI);
