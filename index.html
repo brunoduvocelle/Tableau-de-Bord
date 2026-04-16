@@ -201,6 +201,9 @@
     const canvas = document.getElementById('gauge');
     const ctx = canvas.getContext('2d');
     const cx = 300, cy = 300;
+    let angleAiguille = 0; // Angle actuel en radians
+    let lastTime = 0;
+    const rotationDuration = 45000; // 45 secondes en millisecondes
 
     // --- Logique de la Modale ---
     let currentAlarm = 5;
@@ -228,6 +231,8 @@
     window.onclick = function(event) {
         if (event.target == modal) closeModal();
     }
+
+    // --- Dessin du Cadran ---
 
     // --- Dessin du Cadran ---
     function draw() {
@@ -275,12 +280,23 @@
       ctx.font = 'bold 36px Arial';
       ctx.fillText('0°', cx-135, cy-30); ctx.fillText('0°', cx+135, cy-30);
       ctx.fillText('0,0', cx-135, cy+70); ctx.fillText('0,0', cx+135, cy+70);
+
+      // --- Dessin de l'aiguille avec rotation ---
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.rotate(angleAiguille);
       ctx.beginPath();
-      ctx.moveTo(cx, cy-200); ctx.lineTo(cx+10, cy+25); ctx.lineTo(cx-10, cy+25);
-      ctx.fillStyle = '#00ad00'; ctx.fill();
+      ctx.moveTo(0, -200); 
+      ctx.lineTo(10, 25); 
+      ctx.lineTo(-10, 25);
+      ctx.fillStyle = '#00ad00'; 
+      ctx.fill();
+      ctx.restore();
+
       ctx.beginPath(); ctx.arc(cx, cy, 10, 0, 2*Math.PI);
       ctx.fillStyle = '#222'; ctx.fill();
     }
+    
     draw();
   </script>
 </body>
