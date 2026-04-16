@@ -297,7 +297,18 @@
       ctx.fillStyle = '#222'; ctx.fill();
     }
     
-    draw();
+    
+    // --- Boucle d'animation ---
+    function animate(timestamp) {
+        // Calcul de l'angle basé sur le temps réel (vitesse : 1 tour / 45s)
+        angleAiguille = (timestamp % rotationDuration) / rotationDuration * 2 * Math.PI;
+
+        draw(); // Redessine tout le cadran avec le nouvel angle
+        requestAnimationFrame(animate); // Demande au navigateur de relancer la fonction au prochain rafraîchissement
+    }
+
+    // Lancement de l'animation
+    requestAnimationFrame(animate);
   </script>
 </body>
 </html>
